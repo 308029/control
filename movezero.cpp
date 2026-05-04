@@ -1,7 +1,12 @@
 #include <Arduino.h>
+#include "encoder.h"
 
 const int PWM_PIN = 4;
 const int DIR_PIN = 5;
+
+// エンコーダのピン（仮）
+const int ENCODER_PIN_A = 6;
+const int ENCODER_PIN_B = 7;
 
 const int PWM_FREQ = 20000;
 const int PWM_RES = 10;
@@ -13,11 +18,6 @@ const float Ki = 0.05f;
 const TickType_t CONTROL_PERIOD_MS = 10;
 
 volatile float target_value = 0.0f;
-volatile float current_value = 0.0f;
-
-float readSensorDummy() {
-    return current_value; 
-}
 
 void driveMotor(float control_input) {
     if (control_input >= 0) {
@@ -45,7 +45,9 @@ void piControlTask(void *pvParameters) {
     TickType_t xLastWakeTime = xTaskGetTickCount();
 
     while (true) {
-        float measured_value = readSensorDummy();
+        encoderUpdate(); // 制御ループごとにエンコーダを更新
+        float measured_value = encoderGetAngleDegrees(); // 角度を取得
+        
         float error = target_value - measured_value;
 
         // アンチワインドアップ
@@ -64,6 +66,8 @@ void piControlTask(void *pvParameters) {
 
 void setup() {
     Serial.begin(115200);
+
+    encoderInit(ENCODER_PIN_A, ENCODER_PIN_B); // エンコーダの初期化
 
     pinMode(DIR_PIN, OUTPUT);
     digitalWrite(DIR_PIN, LOW);
