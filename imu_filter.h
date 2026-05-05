@@ -1,5 +1,5 @@
-#ifndef CALIBRATION_H
-#define CALIBRATION_H
+#ifndef IMU_FILTER_H
+#define IMU_FILTER_H
 
 #include <Arduino.h>
 
