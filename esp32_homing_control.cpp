@@ -46,8 +46,7 @@ void setup() {
     // 各ハードウェア・アルゴリズムのオブジェクトを生成（動的確保）
     motor = new MotorDriver(PWM_PIN, DIR_PIN);
     encoder = new EncoderProcessor(ENCODER_PIN_A, ENCODER_PIN_B);
-    pid = new PIDController(1.5, 0.05, 0.0, CONTROL_PERIOD_SEC); // Kp, Ki, Kd, dt
-
+    pid = new PIDController(0.0137, 0.9380, 0.0, CONTROL_PERIOD_SEC); // Kp, Ki, Kd, dt
     // RTOSタスクの作成
     xTaskCreatePinnedToCore(
         homingControlTask,     // タスク関数
